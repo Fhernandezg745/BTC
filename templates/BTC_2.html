@@ -15,11 +15,10 @@
 <script>
     $(document).ready(function () {
         $("button").click(function (event) {
-            var the_id = event.target.id;
             $.ajax({
                 url: "/btcprice",
                 type: "get",
-                data: { button_id: the_id },
+                data: {},
                 success: function (response) {
                     $("#response").html(response);
                 },
