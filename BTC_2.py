@@ -78,7 +78,7 @@ def agregar_indicadores(df):
     
     return df
 
-app = Flask('Servidor Get')
+app = Flask('btc-prediction')
 @app.route('/btcprice',methods=['GET'])
 
 def hola():   

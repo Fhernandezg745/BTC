@@ -1,1 +1,1 @@
-web: gunicorn app:BTC_2.py
+web: gunicorn app:btc-prediction
