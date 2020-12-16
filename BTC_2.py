@@ -99,10 +99,14 @@ def hola():
         df_pred['pred'] = np.where(df_pred.pred > 0 ,'Sube' ,'Baja')
         return(str(df_pred['pred'][0]))
 
-@app.route('/',methods=['GET'])
-def home():
-    return render_template('BTC_2.html')
+
+if st.button('Predecir Tendencia'):
+    return hola()
+
+#@app.route('/',methods=['GET'])
+#def home():
+#    return render_template('BTC_2.html')
     
-app.run(host='0.0.0.0',  port=5002)
+#app.run(host='0.0.0.0',  port=5002)
 
 
