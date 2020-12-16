@@ -145,8 +145,12 @@ def dato_historico(moneda1='BTC', moneda2='USDT', timeframe='1m', desde=datetime
     print("--- %s seconds ---" % (time.time() - start_time))
 
     return df_acum
+
 #Instancio data
 data = dato_historico()
+
+#Ploteamos la evolucion de precio "close"
+#plt.plot(data['close'])
 
 # Guardamos la data en pickle
 with open('btc_minutes.dat', 'wb') as file:
@@ -179,10 +183,13 @@ def agregar_indicadores(df):
 df_indicadores = data.copy()
 df_indicadores = agregar_indicadores(df_indicadores)
 
+#Instancio RandomForest y dropeo las columnas que no voy a necesitar, close y las medias moviles calculadas para predecir fw_60
+# que esta transformada en la columna pred como categorica 0-1
+
 df_forest = df_indicadores.copy()
 df_forest.drop(['ticker','open','high','low','volume'], axis=1, inplace= True)
 
-#Entrenamos el modelo
+#Split y train del modelo
 X_train, X_test, y_train, y_test = train_test_split(df_forest.iloc[:,1:-2], df_forest.pred, test_size=0.2)
 
 modelo_rf = RandomForestClassifier(criterion = 'entropy', max_depth=15)
@@ -202,6 +209,8 @@ modelo = traerModelo('RF')
 data = dato_historico_predecir('tBTCUSD')
 
 prediccion = predecir(data, modelo)
+
+
 
 #imprimimos el horario
 print('Hora actual')

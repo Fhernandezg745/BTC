@@ -28,21 +28,10 @@ import mlrose
 import pmdarima as pm
 from pmdarima.arima import auto_arima
 from pmdarima.arima import ADFTest
+import streamlit as st
 
 
-
-    # obtengo los datos del request get.
-    # notar que en este contexto request contiene la informacion 
-    # que viene de la peticion externa (el metodo get_json lo transforma en un diccionario)
-    #data=request.args.to_dict()
-    #try:            
-    #    resp='el cuadrado de a es : '+str(int(data['a'])*int(data['a']))
-    #except:
-    #    resp='no se envio la variable a'
-    #return(resp)
-
-
-
+st.write('Este es un predictor de tendencia de precios para los proximos minutos de BTC')
 
 def dato_historico(symbol ='tBTCUSD', timeframe = '1m', limit = 10000, section = 'hist'):
     
