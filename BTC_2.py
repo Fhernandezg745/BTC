@@ -31,7 +31,7 @@ from pmdarima.arima import ADFTest
 import streamlit as st
 
 
-st.write('Este es un predictor de tendencia de precios para los proximos minutos de BTC')
+#st.write('Este es un predictor de tendencia de precios para los proximos minutos de BTC')
 
 def dato_historico(symbol ='tBTCUSD', timeframe = '1m', limit = 10000, section = 'hist'):
     
@@ -100,13 +100,10 @@ def hola():
         return(str(df_pred['pred'][0]))
 
 
-if st.button('Predecir Tendencia'):
-    return hola()
-
-#@app.route('/',methods=['GET'])
-#def home():
-#    return render_template('BTC_2.html')
+@app.route('/',methods=['GET'])
+def home():
+    return render_template('BTC_2.html')
     
-#app.run(host='0.0.0.0',  port=5002)
+app.run(host='0.0.0.0',  port=5002)
 
 
