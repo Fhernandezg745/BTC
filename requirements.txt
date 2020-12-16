@@ -59,3 +59,4 @@ watchdog==1.0.1
 webencodings==0.5.1
 Werkzeug==1.0.1
 widgetsnbextension==3.5.
+gunicorn==19.9.0 

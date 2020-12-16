@@ -1,1 +1,1 @@
-web: python3 BTC_2.py
+web: gunicorn app:BTC_2.py
