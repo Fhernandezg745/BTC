@@ -20,7 +20,7 @@ from statistics import mode
 import sklearn.metrics as skm
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import r2_score
+from sklearn.metrics import r2_score, accuracy_score, confusion_matrix
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 from statsmodels.tsa.stattools import acf, pacf
@@ -148,6 +148,8 @@ def dato_historico(moneda1='BTC', moneda2='USDT', timeframe='1m', desde=datetime
     return df_acum
 
 
+
+
 # Instancio data
 data = dato_historico()
 
@@ -155,11 +157,11 @@ data = dato_historico()
 # plt.plot(data['close'])
 
 # Guardamos la data en pickle
-with open('btc_minutes.dat', 'wb') as file:
+with open('btc_minutes.pkl', 'wb') as file:
     pickle.dump(data, file)
 
 # Levantamos la data
-with open('btc_minutes.dat', 'rb') as file:
+with open('btc_minutes.pkl', 'rb') as file:
     data = pickle.load(file)
 
 # Agregamos los indicadores de cruces de medias y la ventana para para predecir sera de 60 minutos
@@ -199,39 +201,107 @@ df_forest.drop(['ticker', 'open', 'high', 'low',
 # Split y train del modelo
 X_train, X_test, y_train, y_test = train_test_split(
     df_forest.iloc[:, 1:-2], df_forest.pred, test_size=0.2)
-
 modelo_rf = RandomForestClassifier(criterion='entropy', max_depth=15)
 modelo_rf.fit(X_train, y_train)
 y_pred = modelo_rf.predict(X_test)
-with open('bot_rf.dat', 'wb') as file:
+#guardo modelo entrenado en pkl
+with open('bot_rf.pkl', 'wb') as file:
     pickle.dump(modelo_rf, file)
-
+#guardo metricas del modelo
 m = np.array(skm.confusion_matrix(y_test, y_pred, normalize='all'))
 #skm.plot_confusion_matrix(modelo_rf, X_test, y_test, normalize='all', cmap='Blues')
 
-# Guardamos el modelo
-with open('RD', 'wb') as file:
-    pickle.dump(modelo_rf, file)
 
+#Requests en la pagina (click al boton)
+
+# Funciones para predecir:
+# levantar el modelo entrenado
+def traerModelo(tipo='RF'):
+    if tipo=='RF':
+        with open('bot_rf.pkl', 'rb') as file:
+            modelo = pickle.load(file)
+    else: 
+        modelo = None
+        print('no encontre el modelo que pediste')
+    
+    return modelo
+
+
+
+# Traer data
+def dato_historico_predecir(symbol ='tBTCUSD', timeframe = '1m', limit = 10000, section = 'hist'):
+    
+    # Endpoint
+    url = f'https://api-pub.bitfinex.com/v2/candles/trade:{timeframe}:{symbol}/{section}'
+    params = {'limit' : limit}
+    
+    # Pido la data
+    r = requests.get(url, params = params)
+    js = r.json()
+    df = pd.DataFrame(js)
+    
+    # Convierto los valores strings a numeros
+    df = df.apply(pd.to_numeric,errors='ignore')
+    
+    # Renombro las columnas.
+    df.columns = ['time', 'open', 'close', 'high', 'low', 'volume']
+    
+    # Paso a timestamp el time
+    df['time'] = pd.to_datetime(df.time, unit='ms')
+    
+    # Ordeno la informacion para tener de lo mas viejo a lo mas nuevo
+    df = df.sort_values(by ='time', ascending = True)
+    
+    df.set_index('time',inplace=True)
+    
+    df = df.dropna()
+
+    return df
+
+
+
+# Generar indicadores
+def agregar_indicadores_predecir(df):
+    cruces = [(2,20),(2,40),(2,60),(2,100),(2,200),(5,20),(5,50),(5,100),(5,200),(5,400),(10,20),(10,50),(10,100),
+             (10,200),(10,500),(20,50),(20,100),(20,200),(20,500),(20,1000),(50,100),(50,200),(50,500),(50,1000),
+             (100,200),(100,400),(100,500),(100,1000),(200,500),(200,1000),(400,1000)]
+    
+    # Agrego las medias
+    for cruce in cruces:
+        clave = str(cruce[0]) + '_' + str(cruce[1])
+        df[clave] = (df.close.rolling(cruce[0]).mean() / df.close.rolling(cruce[1]).mean() -1)*100
+    
+    # Elimino columnas
+    df.drop(['open', 'close', 'high', 'low', 'volume'],axis=1, inplace=True)
+    
+    df = df.dropna().round(4)
+    
+    return df
+
+
+# PREDECIR
+def predecir(data, modelo):
+    try:
+        actual = agregar_indicadores_predecir(data).iloc[-1]
+        y_pred = modelo.predict((actual,))[0]
+        #pruebo con accuracy
+        #y_proba = accuracy_score(y_test, modelo.predict(X_test))
+        y_proba = modelo.predict_proba((actual,))[0]
+        
+        return y_pred, y_proba
+    except:
+        print('No se pudo predecir')
+        return None, None
+
+
+
+
+
+
+#Cuando se hace click al boton se ejecuta esta secuencia
 modelo = traerModelo('RF')
-data = dato_historico_predecir('tBTCUSD')
-
-prediccion = predecir(data, modelo)
-
-# imprimimos el horario
-print('Hora actual')
-print(datetime.now())
-
-# Predecimos resultado
-if prediccion[0] == 0:
-    print('\nPrediccion: en los proximos 60 minutos el BTC va a bajar con respecto al precio actual\n')
-else:
-    print('\nPrediccion: en los proximos 60 minutos el BTC va a subir con respecto al precio actual\n',
-          prediccion[0])
-
-# Predecimos probabilidad resultado
-probabilidad = tuple(prediccion[1])
-print('\nPrediccion probabilidad\n', probabilidad)
+data_predecir = dato_historico_predecir('tBTCUSD')
+prediccion = predecir(data_predecir, modelo)
 
 # imprimimos el horario
 print('Hora actual')
@@ -248,3 +318,17 @@ else:
 probabilidad = tuple(prediccion[1])
 print('\nPrediccion probabilidad\n', probabilidad)
 
+# imprimimos el horario
+print('Hora actual')
+print(datetime.now())
+
+# Predecimos resultado
+if prediccion[0] == 0:
+    print('\nPrediccion: en los proximos 60 minutos el BTC va a bajar con respecto al precio actual\n')
+else:
+    print('\nPrediccion: en los proximos 60 minutos el BTC va a subir con respecto al precio actual\n',
+          prediccion[0])
+
+# Predecimos probabilidad resultado
+probabilidad = tuple(prediccion[1])
+print('\nPrediccion probabilidad\n', probabilidad)
