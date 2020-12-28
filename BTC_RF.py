@@ -301,7 +301,7 @@ if st.button('Predecir Tendencia'):
     # Predecimos probabilidad resultado
     probabilidad = tuple(prediccion[1])
     print('Hora actual')
-    print(datetime.now())
+    print(datetime.now())   
     print('\nPrediccion probabilidad\n',probabilidad)
 
     

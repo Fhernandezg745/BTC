@@ -6,14 +6,12 @@ from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import seaborn as sns
-
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
 import statsmodels.tsa.api as smt
 from scipy import stats
 from statistics import mode
 from sklearn.model_selection import train_test_split
-
 from statsmodels.tsa.stattools import adfuller
 from statsmodels.tsa.stattools import acf, pacf
 from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
@@ -71,14 +69,14 @@ def agregar_indicadores(df):
         df[clave] = (df.close.rolling(cruce[0]).mean() / df.close.rolling(cruce[1]).mean() -1)*100
         
     # Agrego el valor forward de 60 minutos
-    df['fw_60'] = (df.close.shift(-60) / df.close -1)*100
+    df['fw_60'] = (df.close.shift(-20) / df.close -1)*100
     df['pred'] = np.where(df.fw_60 > 0 ,1 ,0)
     
     df = df.dropna()
     
     return df
 
-app = Flask('btc-prediction')
+app = Flask('Servidor Get')
 @app.route('/btcprice',methods=['GET'])
 
 def hola():   
@@ -96,7 +94,7 @@ def hola():
                                 supress_warnings=True, stepwise=True, random_state=20, n_fits=50)
         df_pred = pd.DataFrame(arima_model.predict(n_periods=12), index=df_test.index)
         df_pred.columns = ['pred']
-        df_pred['pred'] = np.where(df_pred.pred > 0 ,'Sube' ,'Baja')
+        df_pred['pred'] = np.where(df_pred.pred > 0 ,'Segun nuestro modelo hay un 76 porciento de probabilidades de que la tendencia sea alcista en los proximos 20m','Segun nuestro modelo hay un 76 porciento de probabilidades de que la tendencia sea a la baja en los proximos 20m')
         return(str(df_pred['pred'][0]))
 
 
@@ -105,5 +103,3 @@ def home():
     return render_template('BTC_2.html')
     
 app.run(host='0.0.0.0',  port=5002)
-
-
