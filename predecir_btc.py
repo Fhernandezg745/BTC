@@ -23,7 +23,6 @@ from sklearn.ensemble import RandomForestClassifier
 from statsmodels.tsa.stattools import acf, pacf
 import warnings
 warnings.filterwarnings('ignore')
-sys.modules['sklearn.externals.six'] = six
 
 # Funciones para predecir:
 # levantar el modelo entrenado
