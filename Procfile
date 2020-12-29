@@ -1,1 +1,1 @@
-web: gunicorn app:btc-prediction
+web: sh create_config.sh && streamlit run predecir_btc.py
