@@ -2,10 +2,6 @@ import streamlit as st
 import logging
 import hashlib
 import time
-import pytz
-import mlrose
-import sys
-import six
 import numpy as np
 import requests
 import pandas as pd
@@ -25,14 +21,6 @@ from sklearn.metrics import r2_score, accuracy_score, confusion_matrix
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 from statsmodels.tsa.stattools import acf, pacf
-from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
-from statsmodels.tsa.arima_model import ARIMA
-import statsmodels.api as sm
-import statsmodels.formula.api as smf
-import statsmodels.tsa.api as smt
-from pmdarima.arima import ADFTest
-import pmdarima as pm
-from pmdarima.arima import auto_arima
 import warnings
 warnings.filterwarnings('ignore')
 sys.modules['sklearn.externals.six'] = six

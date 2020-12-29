@@ -1,10 +1,4 @@
 import streamlit as st
-from pmdarima.arima import ADFTest
-from pmdarima.arima import auto_arima
-import pmdarima as pm
-import mlrose
-import sys
-import six
 from flask import Flask, jsonify, request, render_template
 import numpy as np
 import requests
