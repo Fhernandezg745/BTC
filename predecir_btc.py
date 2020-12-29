@@ -22,6 +22,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 from statsmodels.tsa.stattools import acf, pacf
 import warnings
+import plotly.graph_objects as go
 warnings.filterwarnings('ignore')
 
 # Funciones para predecir:
@@ -97,7 +98,7 @@ def predecir(data, modelo):
         actual = agregar_indicadores_predecir(data).iloc[-1]
         y_pred = modelo.predict((actual,))[0]
         # pruebo con accuracy
-        #y_proba = accuracy_score(y_test, modelo.predict(X_test))
+        # y_proba = accuracy_score(y_test, modelo.predict(X_test))
         y_proba = modelo.predict_proba((actual,))[0]
 
         return y_pred, y_proba
@@ -107,21 +108,31 @@ def predecir(data, modelo):
 
 
 # Predecimos probabilidad resultado
-#probabilidad = tuple(prediccion[1])
-#print('\nPrediccion probabilidad\n', probabilidad)
+# probabilidad = tuple(prediccion[1])
+# print('\nPrediccion probabilidad\n', probabilidad)
 
 
 if st.button('Predecir Bitcoin ahora'):
     # Cuando se hace click al boton se ejecuta esta secuencia
     modelo = traerModelo('RF')
     data_predecir = dato_historico_predecir('tBTCUSD')
+    data_grafico = dato_historico_predecir('tBTCUSD')
     prediccion = predecir(data_predecir, modelo)
+    data_grafico['time'] = data_grafico.index
+    data_grafico = dato_historico_predecir('tBTCUSD')
+    fig = go.Figure(data=[go.Candlestick(x=data_grafico['time'],
+                open=data_grafico['open'],
+                high=data_grafico['high'],
+                low=data_grafico['low'],
+                close=data_grafico['close'])]
     # imprimimos el horario
     st.write('Hora actual')
     st.write(datetime.now())
     if prediccion[0] == 0:
         st.write(
-            '\nPrediccion: en los proximos 10 minutos el BTC va a bajar con respecto al precio actual\n')
+            '\nPrediccion: en los proximos 10 minutos el BTC va a bajar con respecto al precio actual\n', '1 BTC = ',
+            data_grafico['close'][-1], "USD", st.plotly_chart(fig))
     else:
         st.write(
-            '\nPrediccion: en los proximos 10 minutos el BTC va a subir con respecto al precio actual\n', prediccion[0])
+            '\nPrediccion: en los proximos 10 minutos el BTC va a subir con respecto al precio actual\n', '1 BTC = ',
+            data_grafico['close'][-1], "USD", st.plotly_chart(fig))
