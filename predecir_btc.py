@@ -108,19 +108,13 @@ def predecir(data, modelo):
         print('No se pudo predecir')
         return None, None
 
-
-# Predecimos probabilidad resultado
-# probabilidad = tuple(prediccion[1])
-# print('\nPrediccion probabilidad\n', probabilidad)
-
-
+# Imagen de BTC para app
 image = Image.open('btc.jpg')
 st.image(image, caption='Bitcoin Predictor ATR (Alta Tarasca Rogelio)',
          use_column_width=True)
 
-
+# Cuando se hace click al boton se ejecuta esta secuencia
 if st.button('Predecir Bitcoin ahora'):
-    # Cuando se hace click al boton se ejecuta esta secuencia
     modelo = traerModelo('RF')
     data_predecir = dato_historico_predecir('tBTCUSD')
     prediccion = predecir(data_predecir, modelo)
@@ -135,10 +129,6 @@ if st.button('Predecir Bitcoin ahora'):
                                          low=data_grafico['low'].tail(60),
                                          close=data_grafico['close'].tail(60))])
     st.plotly_chart(fig)
-    # fig = go.Figure(data=[go.Candlestick(x=data_grafico['time'], open=data_grafico['open'],
-    #                                     high=data_grafico['high'], low=data_grafico['low'], close=data_grafico['close'])])
-    # imprimimos el horario
-    # st.write('Hora actual', datetime.now())
     if prediccion[0] == 0:
         st.write('Hora actual', datetime.now(),
                  '\nPrediccion: en los proximos 10 minutos el BTC va a bajar con respecto al precio actual\n', '1 BTC = ',
