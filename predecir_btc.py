@@ -108,9 +108,10 @@ def predecir(data, modelo):
         print('No se pudo predecir')
         return None, None
 
+
 # Imagen de BTC para app
 image = Image.open('btc.jpg')
-st.image(image, caption='Bitcoin Predictor ATR (Alta Tarasca Rogelio)',
+st.image(image, caption='Bitcoin Predictor ATR (Automatic Trend Recommendation)',
          use_column_width=True)
 
 # Cuando se hace click al boton se ejecuta esta secuencia
