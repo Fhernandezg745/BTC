@@ -117,6 +117,7 @@ if st.button('Predecir Bitcoin ahora'):
     modelo = traerModelo('RF')
     data_predecir = dato_historico_predecir('tBTCUSD')
     data_grafico = dato_historico_predecir('tBTCUSD')
+    data_grafico['time'] = data_grafico.index
     prediccion = predecir(data_predecir, modelo)
     data_grafico['time'] = data_grafico.index
     data_grafico = dato_historico_predecir('tBTCUSD')
