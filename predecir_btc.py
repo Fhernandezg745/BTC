@@ -110,16 +110,7 @@ def predecir(data, modelo):
 # Predecimos probabilidad resultado
 # probabilidad = tuple(prediccion[1])
 # print('\nPrediccion probabilidad\n', probabilidad)
-data_grafico = dato_historico_predecir('tBTCUSD')
-data_grafico['time'] = data_grafico.index
-x = data_grafico['time']
-y = data_grafico['close']
-p = figure(
-    title='evolucion del precio',
-    x_axis_label='hora',
-    y_axis_label='precio de cierre')
-p.line(x, y, legend_label='Trend', line_width=2)
-st.bokeh_chart(p, use_container_width=True)
+
 
 if st.button('Predecir Bitcoin ahora'):
     # Cuando se hace click al boton se ejecuta esta secuencia
@@ -127,6 +118,16 @@ if st.button('Predecir Bitcoin ahora'):
     data_predecir = dato_historico_predecir('tBTCUSD')
     prediccion = predecir(data_predecir, modelo)
     data_grafico = dato_historico_predecir('tBTCUSD')
+    data_grafico = dato_historico_predecir('tBTCUSD')
+    data_grafico['time'] = data_grafico.index
+    x = data_grafico['time']
+    y = data_grafico['close']
+    p = figure(
+        title='evolucion del precio',
+        x_axis_label='hora',
+        y_axis_label='precio de cierre')
+    p.line(x, y, legend_label='Trend', line_width=2)
+    st.bokeh_chart(p, use_container_width=True)
     # fig = go.Figure(data=[go.Candlestick(x=data_grafico['time'], open=data_grafico['open'],
     #                                     high=data_grafico['high'], low=data_grafico['low'], close=data_grafico['close'])])
     # imprimimos el horario
