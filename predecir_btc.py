@@ -120,18 +120,15 @@ if st.button('Predecir Bitcoin ahora'):
     prediccion = predecir(data_predecir, modelo)
     data_grafico['time'] = data_grafico.index
     data_grafico = dato_historico_predecir('tBTCUSD')
-    fig = go.Figure(data=[go.Candlestick(x=data_grafico['time'],
-                open=data_grafico['open'],
-                high=data_grafico['high'],
-                low=data_grafico['low'],
-                close=data_grafico['close'])]
+    fig = go.Figure(data=[go.Candlestick(x=data_grafico['time'], open=data_grafico['open'],
+                                         high=data_grafico['high'], low=data_grafico['low'], close=data_grafico['close'])])
     # imprimimos el horario
     # st.write('Hora actual', datetime.now())
-if prediccion[0] == 0:
-    st.write(
-        '\nPrediccion: en los proximos 10 minutos el BTC va a bajar con respecto al precio actual\n', '1 BTC = ',
-        data_grafico['close'][-1], "USD", st.plotly_chart(fig))
-else:
-    st.write(
-        '\nPrediccion: en los proximos 10 minutos el BTC va a subir con respecto al precio actual\n', '1 BTC = ',
-        data_grafico['close'][-1], "USD", st.plotly_chart(fig))
+    if prediccion[0] == 0:
+        st.write('Hora actual', datetime.now(),
+                 '\nPrediccion: en los proximos 10 minutos el BTC va a bajar con respecto al precio actual\n', '1 BTC = ',
+                 data_grafico['close'][-1], "USD", st.plotly_chart(fig))
+    else:
+        st.write('Hora actual', datetime.now(),
+                 '\nPrediccion: en los proximos 10 minutos el BTC va a subir con respecto al precio actual\n', '1 BTC = ',
+                 data_grafico['close'][-1], "USD", st.plotly_chart(fig))
