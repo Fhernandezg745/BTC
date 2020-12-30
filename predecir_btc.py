@@ -119,8 +119,8 @@ if st.button('Predecir Bitcoin ahora'):
     data_grafico = dato_historico_predecir('tBTCUSD')
     data_grafico = dato_historico_predecir('tBTCUSD')
     data_grafico['time'] = data_grafico.index
-    x = data_grafico['time']
-    y = data_grafico['close']
+    x = data_grafico['time'].tail(20)
+    y = data_grafico['close'].tail(20)
     p = figure(
         title='evolucion del precio',
         x_axis_label='hora',
