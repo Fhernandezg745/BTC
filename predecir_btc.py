@@ -23,6 +23,7 @@ from sklearn.ensemble import RandomForestClassifier
 from statsmodels.tsa.stattools import acf, pacf
 import warnings
 from bokeh.plotting import figure
+from PIL import Image
 warnings.filterwarnings('ignore')
 
 # Funciones para predecir:
@@ -110,6 +111,12 @@ def predecir(data, modelo):
 # Predecimos probabilidad resultado
 # probabilidad = tuple(prediccion[1])
 # print('\nPrediccion probabilidad\n', probabilidad)
+
+
+image = Image.open('btc.jpg')
+st.image(image, caption='Bitcoin Predictor ATR (Alta Tarasca Rogelio)',
+         use_column_width=True)
+
 
 if st.button('Predecir Bitcoin ahora'):
     # Cuando se hace click al boton se ejecuta esta secuencia
