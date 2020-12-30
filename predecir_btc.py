@@ -22,7 +22,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 from statsmodels.tsa.stattools import acf, pacf
 import warnings
-import plotly.graph_objects as go
+from bokeh.plotting import figure
 warnings.filterwarnings('ignore')
 
 # Funciones para predecir:
@@ -120,6 +120,13 @@ if st.button('Predecir Bitcoin ahora'):
     data_grafico['time'] = data_grafico.index
     prediccion = predecir(data_predecir, modelo)
     data_grafico = dato_historico_predecir('tBTCUSD')
+    x = data_grafico['time']
+    y = data_grafico['close']
+    p = figure(
+        title='evolucion del precio',
+        x_axis_label='hora',
+        y_axis_label='precio de cierre')
+    p.line(x, y, legend_label='Trend', line_width=2)
     # fig = go.Figure(data=[go.Candlestick(x=data_grafico['time'], open=data_grafico['open'],
     #                                     high=data_grafico['high'], low=data_grafico['low'], close=data_grafico['close'])])
     # imprimimos el horario
@@ -127,8 +134,8 @@ if st.button('Predecir Bitcoin ahora'):
     if prediccion[0] == 0:
         st.write('Hora actual', datetime.now(),
                  '\nPrediccion: en los proximos 10 minutos el BTC va a bajar con respecto al precio actual\n', '1 BTC = ',
-                 data_grafico['close'][-1], "USD")
+                 data_grafico['close'][-1], "USD", st.bokeh_chart(p, use_container_width=True))
     else:
         st.write('Hora actual', datetime.now(),
                  '\nPrediccion: en los proximos 10 minutos el BTC va a subir con respecto al precio actual\n', '1 BTC = ',
-                 data_grafico['close'][-1], "USD")
+                 data_grafico['close'][-1], "USD", st.bokeh_chart(p, use_container_width=True))
