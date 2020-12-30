@@ -128,14 +128,20 @@ if st.button('Predecir Bitcoin ahora'):
     data_grafico['time'] = data_grafico.index
     data_grafico['hour'] = data_grafico['time'].dt.time
     st.write("Evolucion BTC/USD en los ultimos 30 minutos")
-    x = data_grafico['hour'].tail(30)
+    '''x = data_grafico['hour'].tail(30)
     y = data_grafico['close'].tail(30)
     p = figure(
         title='evolucion del precio',
         x_axis_label='hora',
         y_axis_label='precio de cierre')
     p.line(x, y, legend_label='Trend', line_width=1)
-    st.bokeh_chart(p, use_container_width=True)
+    st.bokeh_chart(p, use_container_width=True)'''
+    fig = go.Figure(data=[go.Candlestick(x=data_grafico['time'].tail(60),
+                                         open=data_grafico['open'].tail(60),
+                                         high=data_grafico['high'].tail(60),
+                                         low=data_grafico['low'].tail(60),
+                                         close=data_grafico['close'].tail(60))])
+    st.plotly_chart(fig)
     # fig = go.Figure(data=[go.Candlestick(x=data_grafico['time'], open=data_grafico['open'],
     #                                     high=data_grafico['high'], low=data_grafico['low'], close=data_grafico['close'])])
     # imprimimos el horario
