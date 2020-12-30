@@ -120,8 +120,8 @@ if st.button('Predecir Bitcoin ahora'):
     data_grafico['time'] = data_grafico.index
     prediccion = predecir(data_predecir, modelo)
     data_grafico = dato_historico_predecir('tBTCUSD')
-    fig = go.Figure(data=[go.Candlestick(x=data_grafico['time'], open=data_grafico['open'],
-                                         high=data_grafico['high'], low=data_grafico['low'], close=data_grafico['close'])])
+    # fig = go.Figure(data=[go.Candlestick(x=data_grafico['time'], open=data_grafico['open'],
+    #                                     high=data_grafico['high'], low=data_grafico['low'], close=data_grafico['close'])])
     # imprimimos el horario
     # st.write('Hora actual', datetime.now())
     if prediccion[0] == 0:
